@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Post } from 'src/post/entities/post.entity';
 import { Repository } from 'typeorm';
 import { CreateSubDto } from './dto/create-sub.dto';
 import { UpdateSubDto } from './dto/update-sub.dto';
@@ -26,6 +27,24 @@ export class SubService {
       .where('lower(sub.name) = :name', { name: name.toLowerCase() })
       .getOne();
     return sub;
+  }
+
+  async getTopSubs() {
+    const imageUrlExpression = `COALESCE('${process.env.APP_URL}/images/' || s."imageUrn" ,
+    'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y')`;
+    const subs = await this.subRepository
+      .createQueryBuilder()
+      .select(
+        `s.title, s.name, ${imageUrlExpression} as "imageUrl", count(p.id) as "postCount"`,
+      )
+      .from(Sub, 's') //Sub tablet s-nek fogjuk hivni a queryben!!!
+      .leftJoin(Post, 'p', `s.name = p."subName"`)
+      .groupBy('s.title, s.name, "imageUrl"')
+      .orderBy(`"postCount"`, 'DESC')
+      .limit(5)
+      .execute();
+
+    return subs;
   }
 
   findAll() {

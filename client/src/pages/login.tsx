@@ -6,7 +6,7 @@ import InputGroup from '../components/InputGroup';
 import { useRouter } from 'next/router';
 import { useAuthDispatch, useAuthState } from '../context/auth';
 
-export default function Register() {
+export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<any>({});
@@ -30,7 +30,7 @@ export default function Register() {
 
       dispatch( 'LOGIN', res.data );
       // redirect to login page with nextjs router
-      router.push('/');
+      router.back(); // ez oda fogja vissza redirektalni ahonnan a login pagera kattintott
     } catch (error) {
       setErrors(error.response.data);
     }

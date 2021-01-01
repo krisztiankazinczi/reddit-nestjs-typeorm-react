@@ -6,9 +6,10 @@ import { Vote } from './entities/vote.entity';
 import { UserMiddleware } from 'src/middlewares/user.middleware';
 import { AuthMiddleware } from 'src/middlewares/auth.middleware';
 import { PostModule } from 'src/post/post.module';
+import { SubModule } from 'src/sub/sub.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Vote]), PostModule],
+  imports: [TypeOrmModule.forFeature([Vote]), PostModule, SubModule],
   controllers: [MiscController],
   providers: [MiscService],
 })

@@ -1,8 +1,9 @@
-import { Body, Controller, Res, Post } from '@nestjs/common';
+import { Body, Controller, Res, Post, Get } from '@nestjs/common';
 import { MiscService } from './misc.service';
 import { VoteBodyDto } from './dto/vote-body.dto';
 import User from 'src/user/entities/user.entity';
 import { PostService } from 'src/post/post.service';
+import { SubService } from 'src/sub/sub.service';
 import { Vote } from './entities/vote.entity';
 import { Comment } from 'src/post/entities/comment.entity';
 
@@ -11,6 +12,7 @@ export class MiscController {
   constructor(
     private readonly miscService: MiscService,
     private readonly postService: PostService,
+    private readonly subService: SubService,
   ) {}
 
   @Post('vote')
@@ -77,5 +79,15 @@ export class MiscController {
     }
 
     return res.status(200).json(voteBodyDto);
+  }
+
+  @Get('top-subs')
+  async topSubs(@Res() res) {
+    try {
+      const subs = await this.subService.getTopSubs();
+      return res.json(subs);
+    } catch (error) {
+      return res.status(500).json({ error: 'Something went wrong' });
+    }
   }
 }
