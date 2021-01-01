@@ -27,6 +27,7 @@ export class PostModule {
     consumer.apply(UserMiddleware).forRoutes(
       { path: 'api/posts', method: RequestMethod.POST },
       { path: 'api/posts', method: RequestMethod.GET },
+      { path: 'api/posts/:identifier/:slug', method: RequestMethod.GET },
       {
         path: 'api/posts/:identifier/:slug/comments',
         method: RequestMethod.POST,

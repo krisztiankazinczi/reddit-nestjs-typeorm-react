@@ -57,6 +57,11 @@ export class PostService {
     return this.commentRepository.findOneOrFail({ identifier });
   }
 
+  setUserVote(post: Post, user: User) {
+    post.setUserVote(user);
+    return post;
+  }
+
   setUserVotesOnPosts(posts: Post[], user: User) {
     posts.forEach((p) => p.setUserVote(user));
     return posts;

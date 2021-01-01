@@ -61,12 +61,17 @@ export class PostController {
   @Get(':identifier/:slug')
   async findPost(@Param() params, @Res() res) {
     const { identifier, slug } = params;
+    const user = res.locals.user;
     try {
       const post = await this.postService.findPost(identifier, slug, [
         'sub',
         'comments',
         'votes',
       ]);
+      if (user) {
+        post.setUserVote(user);
+      }
+      post.sub.getUrls(); // get subUrls.
       return res.status(200).json(post);
     } catch (error) {
       console.log(error);
