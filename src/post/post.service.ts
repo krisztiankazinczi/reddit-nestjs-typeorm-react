@@ -57,6 +57,14 @@ export class PostService {
     return this.commentRepository.findOneOrFail({ identifier });
   }
 
+  findCommentsOnPost(condition: {
+    where: { post: Post };
+    order: { [key: string]: 'DESC' | 'ASC' };
+    relations: string[] | [];
+  }) {
+    return this.commentRepository.find(condition);
+  }
+
   setUserVote(post: Post, user: User) {
     post.setUserVote(user);
     return post;

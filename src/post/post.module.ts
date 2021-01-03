@@ -30,7 +30,7 @@ export class PostModule {
       { path: 'api/posts/:identifier/:slug', method: RequestMethod.GET },
       {
         path: 'api/posts/:identifier/:slug/comments',
-        method: RequestMethod.POST,
+        method: RequestMethod.ALL,
       },
     );
     consumer.apply(AuthMiddleware).forRoutes(

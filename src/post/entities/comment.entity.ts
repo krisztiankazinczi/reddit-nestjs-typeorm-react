@@ -1,5 +1,6 @@
 import { Exclude } from 'class-transformer';
 import {
+  AfterLoad,
   BeforeInsert,
   Column,
   Entity as TOEntity,
@@ -51,6 +52,18 @@ export class Comment extends Entity {
     if (this.votes) {
       const index = this.votes.findIndex((v) => v.username === user.username);
       this.userVote = index > -1 ? this.votes[index].value : 0;
+    }
+  }
+
+  protected voteScore: number;
+
+  @AfterLoad()
+  createFields() {
+    if (this.votes) {
+      this.voteScore = this.votes.reduce(
+        (prev, curr) => prev + (curr.value || 0),
+        0,
+      );
     }
   }
 

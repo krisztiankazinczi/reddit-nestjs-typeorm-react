@@ -103,6 +103,27 @@ export class PostController {
     }
   }
 
+  @Get(':identifier/:slug/comments')
+  async getPostComments(@Param() params, @Res() res) {
+    const { identifier, slug } = params;
+    try {
+      const post = await this.postService.findPost(identifier, slug, []);
+      const comments = await this.postService.findCommentsOnPost({
+        where: { post },
+        order: { createdAt: 'DESC' },
+        relations: ['votes'],
+      });
+
+      if (res.locals.user) {
+        this.postService.setUserVotesOnComments(comments, res.locals.user);
+      }
+
+      return res.json(comments);
+    } catch (error) {
+      return res.status(500).json({ error: 'Something went wrong' });
+    }
+  }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.postService.findOne(+id);
