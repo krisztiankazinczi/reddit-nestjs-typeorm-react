@@ -27,7 +27,11 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      backgroundColor: ['disabled'], // ha extra stateket is akarunk pl hoveren kivul, akkor itt lehet hozzaadni. A disabled ilyen extra statet. 
+      // fontos, hogy minden propertihez hozza kell adni amit igy akarunk modositani!!!!borderColor: 
+      borderColor: ['disabled'] 
+    },
   },
   plugins: [
     // ez fogja a reddit oldalt kozepre centralni egy containerbe
