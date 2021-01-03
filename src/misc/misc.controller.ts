@@ -18,7 +18,6 @@ export class MiscController {
   @Post('vote')
   async vote(@Body() voteBodyDto: VoteBodyDto, @Res() res) {
     const user: User = res.locals.user;
-
     try {
       let post = await this.postService.findPost(
         voteBodyDto.identifier,

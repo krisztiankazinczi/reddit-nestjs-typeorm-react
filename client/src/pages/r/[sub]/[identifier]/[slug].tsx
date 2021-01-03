@@ -12,6 +12,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useAuthState } from "../../../../context/auth";
 import ActionButton from "../../../../components/ActionButton";
 import { FormEvent, useState } from "react";
+import Vote from "../../../../components/Vote";
 
 dayjs.extend(relativeTime);
 
@@ -31,29 +32,6 @@ export default function PostPage() {
     identifier && slug ? `/posts/${identifier}/${slug}/comments` : ''
   );
   if (error) router.push('/');
-
-  const vote = async (value: number, comment?: Comment) => {
-    // if not logged in redirect to login
-    if (!authenticated) router.push('/login');
-
-    // if vote value is the same as it was then set uservote to 0, and back-end will delete the vote from database
-    if (
-      (!comment && value === post?.userVote) || 
-      (comment && comment.userVote === value)
-    ) value = 0;
-    
-    try {
-      await Axios.post('/misc/vote', {
-        identifier,
-        slug,
-        commentIdentifier: comment?.identifier, // if it's undefined, this commentIdentifier wont be sent to server!!!
-        value,
-      });
-      revalidate();
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const submitComment = async (event: FormEvent) => {
     event.preventDefault();
@@ -102,31 +80,7 @@ export default function PostPage() {
             <>
               {post && (
                 <div className="flex">
-                  {/* Vote Section */}
-                  <div className="flex-shrink-0 w-10 py-2 text-center rounded-l">
-                    {/* Upvote and DownVote */}
-                    <div
-                      className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500"
-                      onClick={() => vote(1)}
-                    >
-                      <i
-                        className={classNames('icon-arrow-up', {
-                          'text-blue-600': post.userVote === 1,
-                        })}
-                      ></i>
-                    </div>
-                    <p className="text-xs font-bold">{post.voteScore}</p>
-                    <div
-                      className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-blue-500"
-                      onClick={() => vote(-1)}
-                    >
-                      <i
-                        className={classNames('icon-arrow-down', {
-                          'text-red-500': post.userVote === -1,
-                        })}
-                      ></i>
-                    </div>
-                  </div>
+                  <Vote post={post} identifier={identifier} slug={slug} />
                   <div className="py-2 pr-2">
                   <div className="flex items-center">
                     <p className="text-xs text-gray-500">
@@ -206,33 +160,9 @@ export default function PostPage() {
                 </div>
               {/* Comments list */}
               <hr />
-              {comments?.map(comment => (
+              {post && comments?.map(comment => (
                 <div className="flex" key={comment.identifier}>
-                  {/* Vote Section */}
-                  <div className="flex-shrink-0 w-10 py-2 text-center rounded-l">
-                    {/* Upvote and DownVote */}
-                    <div
-                      className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500"
-                      onClick={() => vote(1, comment)}
-                    >
-                      <i
-                        className={classNames('icon-arrow-up', {
-                          'text-blue-600': comment.userVote === 1,
-                        })}
-                      ></i>
-                    </div>
-                    <p className="text-xs font-bold">{comment.voteScore}</p>
-                    <div
-                      className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-blue-500"
-                      onClick={() => vote(-1, comment)}
-                    >
-                      <i
-                        className={classNames('icon-arrow-down', {
-                          'text-red-500': comment.userVote === -1,
-                        })}
-                      ></i>
-                    </div>
-                  </div>
+                  <Vote post={post} comment={comment} identifier={identifier} slug={slug} />
                   <div className="py-2 pr-2">
                     <p className="mb-1 text-xs leading-none">
                       <Link href={`/u/${comment.username}`}>
