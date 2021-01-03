@@ -1,4 +1,4 @@
-export interface Post {
+export type Post = {
   identifier: string;
   title: string;
   body?: string;
@@ -36,4 +36,14 @@ export interface Sub {
   imageUrl: string;
   bannerUrl: string;
   postCount?: number;
+}
+
+export type Comment = {
+  createdAt: string;
+  updatedAt: string;
+  identifier: string;
+  body: string;
+  username: string;
+  voteScore: number;
+  userVote: number;
 }
