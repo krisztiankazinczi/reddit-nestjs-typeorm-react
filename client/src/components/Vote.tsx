@@ -19,11 +19,6 @@ const Vote: React.FC<Props> = ({ post, comment, identifier, slug }) => {
   const vote = async (value: number, comm?: Comment) => {
     // if not logged in redirect to login
     if (!authenticated) router.push('/login');
-    console.log(comm)
-    console.log(post)
-    console.log(identifier)
-    console.log(slug)
-    console.log(value)
     // if vote value is the same as it was then set uservote to 0, and back-end will delete the vote from database
     if (
       (!comm && value === post?.userVote) || 
@@ -44,7 +39,7 @@ const Vote: React.FC<Props> = ({ post, comment, identifier, slug }) => {
 
   return (
     // Vote Section
-    <div className="flex-shrink-0 w-10 py-2 text-center rounded-l">
+    <div className="flex-shrink-0 w-10 py-2 text-center bg-gray-200 rounded-l">
       {/* Upvote and DownVote */}
       <div
         className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500"

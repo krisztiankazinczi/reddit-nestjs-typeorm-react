@@ -46,4 +46,7 @@ export type Comment = {
   username: string;
   voteScore: number;
   userVote: number;
+  post?: Post;
+  url?: string;
+  subName?: string;
 }
