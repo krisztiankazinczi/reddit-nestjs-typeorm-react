@@ -1,4 +1,4 @@
-import { Body, Controller, Res, Post, Get } from '@nestjs/common';
+import { Body, Controller, Res, Post, Get, Param } from '@nestjs/common';
 import { MiscService } from './misc.service';
 import { VoteBodyDto } from './dto/vote-body.dto';
 import User from 'src/user/entities/user.entity';
@@ -6,6 +6,7 @@ import { PostService } from 'src/post/post.service';
 import { SubService } from 'src/sub/sub.service';
 import { Vote } from './entities/vote.entity';
 import { Comment } from 'src/post/entities/comment.entity';
+import { UserService } from 'src/user/user.service';
 
 @Controller('api/misc')
 export class MiscController {
@@ -13,6 +14,7 @@ export class MiscController {
     private readonly miscService: MiscService,
     private readonly postService: PostService,
     private readonly subService: SubService,
+    private readonly userService: UserService,
   ) {}
 
   @Post('vote')
@@ -87,6 +89,38 @@ export class MiscController {
       return res.json(subs);
     } catch (error) {
       return res.status(500).json({ error: 'Something went wrong' });
+    }
+  }
+
+  @Get('users/:username')
+  async getUserSubmissions(@Param() param, @Res() res) {
+    try {
+      const user = await this.userService.getUserSubmissions(param.username);
+      const posts = await this.postService.findPostsByUser(user);
+      const comments = await this.postService.findCommentsByUser(user);
+
+      if (res.locals.user) {
+        this.postService.setUserVotesOnPosts(posts, user);
+        this.postService.setUserVotesOnComments(comments, user);
+      }
+
+      const submissions: any[] = [];
+      // ...p.toJSON() - hasznaljuk, mert rengeteg adat lehet benne!!!!!
+      posts.forEach((p) => submissions.push({ type: 'Post', ...p.toJSON() }));
+      posts.forEach((c) =>
+        submissions.push({ type: 'Comment', ...c.toJSON() }),
+      );
+
+      submissions.sort((a, b) => {
+        if (b.createdAt > a.createdAt) return 1;
+        if (b.createdAt < a.createdAt) return -1;
+        return 0;
+      });
+
+      return res.json({ user, submissions });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: 'Something went wrong' });
     }
   }
 }

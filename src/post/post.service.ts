@@ -44,6 +44,13 @@ export class PostService {
     return this.postRepository.find(query);
   }
 
+  findPostsByUser(user: User) {
+    return this.postRepository.find({
+      where: { user },
+      relations: ['comments', 'votes', 'sub'],
+    });
+  }
+
   createComment(createCommentDto: CreateCommentDto) {
     return this.commentRepository.create(createCommentDto);
   }
@@ -63,6 +70,13 @@ export class PostService {
     relations: string[] | [];
   }) {
     return this.commentRepository.find(condition);
+  }
+
+  findCommentsByUser(user: User) {
+    return this.commentRepository.find({
+      where: { user },
+      relations: ['post'],
+    });
   }
 
   setUserVote(post: Post, user: User) {

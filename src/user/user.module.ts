@@ -8,6 +8,7 @@ import { AuthMiddleware } from 'src/middlewares/auth.middleware';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
+  exports: [UserService],
   controllers: [UserController],
   providers: [UserService],
 })
