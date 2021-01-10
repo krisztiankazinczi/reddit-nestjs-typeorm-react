@@ -12,7 +12,7 @@ export default function user() {
 
   const { data, error } = useSWR<any>(username ? `/misc/users/${username}` : null)
   if (error) router.push('/');
-  console.log(data);
+
   return (
     <>
       <Head>
@@ -24,11 +24,11 @@ export default function user() {
             {data.submissions.map((submission: any) => {
               if (submission.type === 'Post') {
                 const post: Post = submission;
-                return <PostCard key={post.identifier} post={post} />
+                return <PostCard key={post.identifier + Math.random() * 10000} post={post} />
               } else {
                 const comment: Comment = submission;
                 return (
-                  <div key={comment.identifier} className="flex my-4 bg-white rounded">
+                  <div key={comment.identifier + Math.random() * 10000} className="flex my-4 bg-white rounded">
                     <div className="flex-shrink-0 w-10 py-4 text-center bg-gray-200 rounded-l">
                       <i className="text-gray-500 fas fa-comment-alt fa-xs"></i>
                       </div>
@@ -67,7 +67,7 @@ export default function user() {
               <div className="p-3">
                 <h1 className="mb-3 text-xl text-center">{data.user.username}</h1>
                 <hr />
-                <p className="mt-3">Joined {dayjs(data.user.createdAt).format('MMM YYYY')}</p>
+                <p className="mt-3 text-center">Joined {dayjs(data.user.createdAt).format('MMM YYYY')}</p>
               </div>
             </div>
           </div>
