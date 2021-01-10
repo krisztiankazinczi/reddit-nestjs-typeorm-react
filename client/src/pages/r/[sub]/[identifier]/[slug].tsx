@@ -6,7 +6,6 @@ import { useRouter } from "next/router"
 import useSWR from "swr";
 import Sidebar from "../../../../components/Sidebar";
 import { Post, Comment } from "../../../../types";
-import classNames from 'classnames';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useAuthState } from "../../../../context/auth";
@@ -134,11 +133,11 @@ export default function PostPage() {
                         </Link>
                       </p>
                       <form onSubmit={submitComment}>
-                        {/* <textarea 
+                        <textarea 
                           className="w-full p-3 border-gray-300 rounded focus:outline-none focus:border-gray-600" 
                           onChange={ e => setNewComment(e.target.value)} 
                           value={newComment}>
-                        </textarea> */}
+                        </textarea>
                         
                         <div className="flex justify-end">
                           <button className="px-3 py-1 blue button" disabled={newComment.trim() === ''}>Comment</button>
