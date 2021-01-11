@@ -197,7 +197,7 @@ export class SubController {
         return res.status(400).json({ error: 'Name must not be empty' });
       }
       const subs = await this.subService.searchSubs(name);
-
+      subs.forEach((sub) => sub.getUrls());
       return res.json(subs);
     } catch (error) {
       console.log(error);
