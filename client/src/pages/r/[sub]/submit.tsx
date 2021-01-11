@@ -1,4 +1,5 @@
 import Axios from "axios";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
@@ -77,3 +78,17 @@ export default function submit() {
   )
 }
 
+// check if user logged in in server side (rendering)
+export const getServerSideProps: GetServerSideProps =async ({ req, res }) => {
+  try {
+    const cookie = req.headers.cookie;
+    // throw an error if user is not logged in and redirect in the catch
+    if (!cookie) throw new Error('Missing auth token cookie')
+
+    await Axios.get('/auth/me', { headers: { cookie } });
+
+    return { props: {}};
+  } catch (error) {
+    res.writeHead(307, { location: '/login' }).end()
+  }
+}
