@@ -68,4 +68,16 @@ export class SubService {
   async remove(sub: Sub) {
     return this.subRepository.remove(sub);
   }
+
+  searchSubs(name: string) {
+    return (
+      this.subRepository
+        .createQueryBuilder()
+        .where('LOWER(name) LIKE :name', {
+          name: `${name.toLowerCase().trim()}%`,
+        }) // %jelek kellenek ha valamiben pontosan ezt a szovegdarabot keressuk
+        // ha csak a vegen van % jel akkor nem nezi, hogy a szovegunkkel kell vegzodnie, csak kezdodnie!!!! Ezert irtam csak a vegere, mert keresesben az elejetol esszeru nezni
+        .getMany()
+    );
+  }
 }

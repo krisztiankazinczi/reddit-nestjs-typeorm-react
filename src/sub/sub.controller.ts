@@ -189,4 +189,19 @@ export class SubController {
       return res.status(500).json({ error: 'Something went wrong' });
     }
   }
+
+  @Get('search/:name')
+  async searchSubs(@Param('name') name: string, @Res() res) {
+    try {
+      if (name === '') {
+        return res.status(400).json({ error: 'Name must not be empty' });
+      }
+      const subs = await this.subService.searchSubs(name);
+
+      return res.json(subs);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: 'Something went wrong' });
+    }
+  }
 }

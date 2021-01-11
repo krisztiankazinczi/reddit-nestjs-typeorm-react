@@ -26,7 +26,10 @@ export class SubModule {
       .forRoutes({ path: 'api/subs', method: RequestMethod.ALL });
     consumer
       .apply(AuthMiddleware)
-      .exclude({ path: 'api/subs/:name', method: RequestMethod.GET })
+      .exclude(
+        { path: 'api/subs/:name', method: RequestMethod.GET },
+        { path: 'api/subs/search/:name', method: RequestMethod.GET },
+      )
       .forRoutes({ path: 'api/subs', method: RequestMethod.ALL });
     consumer
       .apply(OwnSubMiddleware)
