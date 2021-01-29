@@ -2,7 +2,6 @@ import Axios from "axios";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { FormEvent, useState } from "react"
-import classNames from 'classnames';
 import { useRouter } from "next/router";
 import CreateSubInput from "../../components/CreateSubInput";
 
