@@ -4,6 +4,7 @@ import Head from "next/head";
 import { FormEvent, useState } from "react"
 import classNames from 'classnames';
 import { useRouter } from "next/router";
+import CreateSubInput from "../../components/CreateSubInput";
 
 export default function create() {
   const [name, setName] = useState('');
@@ -39,50 +40,30 @@ export default function create() {
           <h1 className="mb-2 text-lg font-medium">Create Community</h1>
           <hr />
           <form onSubmit={onSubmit}>
-            <div className="my-6">
-              <p className="font-medium">Name</p>
-              <p className="mb-2 text-xs text-gray-500">
-                Community names including capitalization cannot be changed.
-              </p>
-              <input 
-                type="text" 
-                className={
-                  classNames("w-full p-3 border border-gray-200 rounded hover:border-gray-500",
-                   { 'border-red-600': errors.name })}
-                value={name}
-                onChange={e => setName(e.target.value)}  
-              />
-              <small className="font-medium text-red-600">{errors.name}</small>
-            </div>
-            <div className="my-6">
-              <p className="font-medium">Title</p>
-              <p className="mb-2 text-xs text-gray-500">
-                Community title represents the topic and you can change it at anytime.
-              </p>
-              <input 
-                type="text" 
-                className={
-                  classNames("w-full p-3 border border-gray-200 rounded hover:border-gray-500",
-                   { 'border-red-600': errors.title })}
-                value={title}
-                onChange={e => setTitle(e.target.value)}  
-              />
-              <small className="font-medium text-red-600">{errors.title}</small>
-            </div>
-            <div className="my-6">
-              <p className="font-medium">Description</p>
-              <p className="mb-2 text-xs text-gray-500">
-                Community names including capitalization cannot be changed.
-              </p>
-              <textarea 
-                className={
-                  classNames("w-full p-3 border border-gray-200 rounded hover:border-gray-500",
-                   { 'border-red-600': errors.description })}
-                value={description}
-                onChange={e => setDescription(e.target.value)}  
-              />
-              <small className="font-medium text-red-600">{errors.description}</small>
-            </div>
+            <CreateSubInput 
+              fieldName="Name"
+              fieldDesc="Community names including capitalization cannot be changed."
+              fieldValue={name}
+              error={errors.name}
+              setFieldValue={setName}
+              inputType="input"
+            />
+            <CreateSubInput 
+              fieldName="Title"
+              fieldDesc="Community title represents the topic and you can change it at anytime."
+              fieldValue={title}
+              error={errors.title}
+              setFieldValue={setTitle}
+              inputType="input"
+            />
+            <CreateSubInput 
+              fieldName="Description"
+              fieldDesc="Community names including capitalization cannot be changed."
+              fieldValue={description}
+              error={errors.description}
+              setFieldValue={setDescription}
+              inputType="textarea"
+            />
             <div className="flex justify-end">
               <button className="px-4 py-1 text-sm font-semibold capitalize blue button">Create Community</button>
             </div>
