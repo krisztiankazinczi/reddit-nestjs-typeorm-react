@@ -9,6 +9,7 @@ import PostCard from '../components/PostCard';
 
 import { Post, Sub } from '../types';
 import Link from 'next/link';
+import { useAuthState } from '../context/auth';
  
 dayjs.extend(relativeTime);
 
@@ -21,8 +22,9 @@ export default function Home() {
   //     .catch((err) => console.log(err));
   // }, []);
 // ez egyenerteku a kikommentelt resszel!!
-  const { data: posts } = useSWR('/posts');
-  const { data: topSubs } = useSWR('/misc/top-subs');
+  const { data: posts } = useSWR<Post[]>('/posts');
+  const { data: topSubs } = useSWR<Sub[]>('/misc/top-subs');
+  const { authenticated } = useAuthState();
 
   return (
     // ez a padding azert kell ,ert pont 20 egyseg magas a navbar!!!!
@@ -47,19 +49,21 @@ export default function Home() {
               </p>
             </div>
             <div>
-              {topSubs?.map((sub: Sub) => (
+              {topSubs?.map((sub) => (
                 <div key={sub.name} className="flex items-center px-4 py-2 text-xs border-b">
                     <Link href={`/r/${sub.name}`}>
-                      <Image 
-                        className="rounded-full cursor-pointer"
-                        src={sub.imageUrl} 
-                        alt="Sub" 
-                        width={6 * 16 /4} 
-                        height={6 * 16 /4} 
-                      />
+                      <a>
+                        <Image 
+                          className="rounded-full cursor-pointer"
+                          src={sub.imageUrl} 
+                          alt="Sub" 
+                          width={6 * 16 /4} 
+                          height={6 * 16 /4} 
+                        />
+                      </a>
                     </Link>
                     <Link href={`/r/${sub.name}`}>
-                      <a className="ml-2 font-bold  hover:cursor-pointer">
+                      <a className="ml-2 font-bold hover:cursor-pointer">
                         /r/{sub.name}
                       </a>
                     </Link>
@@ -67,6 +71,15 @@ export default function Home() {
                   </div>
               ))}
             </div>
+            {authenticated && (
+              <div className="p-4 border-t-2">
+                <Link href="/subs/create">
+                  <a className="w-full px-2 py-1 blue button">
+                    Create Community
+                  </a>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
