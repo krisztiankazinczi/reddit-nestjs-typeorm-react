@@ -11,7 +11,7 @@ import { AuthProvider } from '../context/auth';
 import '../styles/tailwind.css';
 import '../styles/icons.css';
 
-Axios.defaults.baseURL = 'http://localhost:5000/api';
+Axios.defaults.baseURL = process.env.NEXT_PUBLIC_SERVER_BASE_URL + '/api';
 Axios.defaults.withCredentials = true; // we always want to send cookies!!!
 
 const fetcher = async (url: string) => {

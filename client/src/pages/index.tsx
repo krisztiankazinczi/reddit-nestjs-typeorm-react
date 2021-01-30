@@ -23,6 +23,8 @@ export default function Home() {
   //     .catch((err) => console.log(err));
   // }, []);
 // ez egyenerteku a kikommentelt resszel!!
+const description = "Reddit is a network of communities based on people's interests. Find communities you're interested in, and become part of an online community!";
+const title = "Reddit: the front page of internet";
 
   const [observedPost, setObservedPost] = useState('');
 
@@ -63,7 +65,12 @@ export default function Home() {
     // ez a padding azert kell ,ert pont 20 egyseg magas a navbar!!!!
     <Fragment>
       <Head>
-        <title>Reddit: the front page of internet</title>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta property="twitter:description" content={description} />
+        <meta property="twitter:title" content={title} />
       </Head>
 
       <div className="container flex pt-4">

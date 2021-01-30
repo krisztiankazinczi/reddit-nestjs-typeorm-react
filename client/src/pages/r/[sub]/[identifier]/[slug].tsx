@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useAuthState } from "../../../../context/auth";
 import ActionButton from "../../../../components/ActionButton";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useEffect, useState } from "react";
 import Vote from "../../../../components/Vote";
 
 dayjs.extend(relativeTime);
@@ -22,6 +22,7 @@ export default function PostPage() {
   const { authenticated, user } = useAuthState();
 
   const [newComment, setNewComment] = useState('');
+  const [description, setDescription] = useState('');
 
   const { data: post, error } = useSWR<Post>(
     identifier && slug ? `/posts/${identifier}/${slug}` : ''
@@ -31,6 +32,14 @@ export default function PostPage() {
     identifier && slug ? `/posts/${identifier}/${slug}/comments` : ''
   );
   if (error) router.push('/');
+
+  useEffect(() => {
+    if (!post) return;
+    let desc = post.body || post.title;
+    desc = desc.substring(0, 158).concat('..'); // this is suggested, the description meta should be 150-160 character
+    setDescription(desc);
+    
+  }, [post]);
 
   const submitComment = async (event: FormEvent) => {
     event.preventDefault();
@@ -52,6 +61,11 @@ export default function PostPage() {
     <>
       <Head>
         <title>{post?.title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:description" content={description} />
+        <meta property="og:title" content={post?.title} />
+        <meta property="twitter:description" content={description} />
+        <meta property="twitter:title" content={post?.title} />
       </Head>
       <Link href={`/r/${sub}`}>
         <a>
