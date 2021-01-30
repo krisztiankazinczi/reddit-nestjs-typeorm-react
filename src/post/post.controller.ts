@@ -49,9 +49,14 @@ export class PostController {
   @Get()
   async findAll(@Res() res, @Query() query) {
     const currentPage: number = (query.page || 0) as number;
-    const postsPerPage: number = (query.count || 3) as number;
+    const postsPerPage: number = (query.count || 8) as number;
     try {
       let posts = await this.postService.findAll(currentPage, postsPerPage);
+
+      posts.forEach((post) => {
+        post.sub.getUrls();
+      });
+
       if (res.locals.user) {
         posts = this.postService.setUserVotesOnPosts(posts, res.locals.user);
       }

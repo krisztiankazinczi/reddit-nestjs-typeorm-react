@@ -5,6 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import ActionButton from './ActionButton';
 import Vote from './Vote';
 import { useAuthState } from '../context/auth';
+import { useRouter } from 'next/router';
 dayjs.extend(relativeTime);
 
 interface Props {
@@ -16,6 +17,10 @@ function PostCard({
   post,
   revalidate
 }: Props) {
+
+  const router = useRouter();
+
+  const isInSubPage = router.pathname === '/r/[sub]';
   
   return (
     <div key={post.identifier} className="flex mb-4 bg-white rounded" id={post.identifier}>
@@ -24,20 +29,24 @@ function PostCard({
       {/* Post data section */}
       <div className="w-full p-2">
         <div className="flex items-center">
-          <Link href={`/r/${post.subName}`}>
-              <img
-                src="https://i.stack.imgur.com/SE2cv.jpg"
-                className="w-6 h-6 mr-1 rounded-full cursor-pointer"
-              />
-          </Link>
-          <Link href={`/r/${post.subName}`}>
-            <a className="text-xs font-bold cursor-pointer hover:underline">
-              /r/{post.subName}
-            </a>
-          </Link>
+          {!isInSubPage && (
+            <>
+              <Link href={`/r/${post.subName}`}>
+                  <img
+                    src={post?.sub?.imageUrl}
+                    className="w-6 h-6 mr-1 rounded-full cursor-pointer"
+                  />
+              </Link>
+              <Link href={`/r/${post.subName}`}>
+                <a className="text-xs font-bold cursor-pointer hover:underline">
+                  /r/{post.subName}
+                </a>
+              </Link>
+              <span className="mx-1 text-xs text-gray-500">•</span>
+            </>
+          )}
 
           <p className="text-xs text-gray-500">
-            <span className="mx-1">•</span>
             Posted by
             <Link href={`/u/${post.username}`}>
               <a className="mx-1 hover:underline">/u/{post.username}</a>
