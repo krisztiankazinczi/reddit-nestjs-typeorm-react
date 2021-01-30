@@ -1,8 +1,8 @@
 import Head from 'next/head';
-import { Fragment} from 'react';
+import { Fragment, useEffect, useState} from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import useSWR from 'swr'
+import useSWR, { useSWRInfinite } from 'swr'
 import Image from 'next/image';
 
 import PostCard from '../components/PostCard';
@@ -22,9 +22,41 @@ export default function Home() {
   //     .catch((err) => console.log(err));
   // }, []);
 // ez egyenerteku a kikommentelt resszel!!
-  const { data: posts } = useSWR<Post[]>('/posts');
+
+  const [observedPost, setObservedPost] = useState('');
+
+  // const { data: posts } = useSWR<Post[]>('/posts');
   const { data: topSubs } = useSWR<Sub[]>('/misc/top-subs');
   const { authenticated } = useAuthState();
+
+  const { data, error, mutate, size: page, setSize: setPage, isValidating } = useSWRInfinite<Post[]>(
+    index => 
+      `/posts?page=${index}`
+  );
+
+  const posts: Post[] = data ? [].concat(...data) : [];
+  const isLoadingInitialData = !data && !error;
+
+  useEffect(() => {
+    if (!posts || !posts.length) return;
+    const id = posts[posts.length -1].identifier;
+    if (id !== observedPost) { // if this id has not changed, we know that we reached the bottom of all the posts
+      setObservedPost(id);
+      observeElement(document.getElementById(id));
+    }
+  }, [posts]);
+
+  const observeElement = (element: HTMLElement | null) => {
+    if (!element) return; // html element not rendered yet
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting === true) {
+        console.log('reached bottom of posts');
+        setPage(page + 1);
+        observer.unobserve(element); // always unobserve the bottom element when we reach them
+      }
+    }, {threshold: 1}); // threshold 1 - we track the bottom, 0 - we track the top!!!!
+    observer.observe(element);
+  }
 
   return (
     // ez a padding azert kell ,ert pont 20 egyseg magas a navbar!!!!

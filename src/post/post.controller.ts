@@ -47,9 +47,6 @@ export class PostController {
   }
 
   @Get()
-  // async findAll(@Res() res, @Req() req) {
-  //   const currentPage: number = (req.query.page || 0) as number;
-  //   const postsPerPage: number = (req.query.count || 3) as number;
   async findAll(@Res() res, @Query() query) {
     const currentPage: number = (query.page || 0) as number;
     const postsPerPage: number = (query.count || 3) as number;

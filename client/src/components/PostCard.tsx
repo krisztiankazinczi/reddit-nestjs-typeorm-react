@@ -15,7 +15,7 @@ function PostCard({
 }: Props) {
   
   return (
-    <div key={post.identifier} className="flex mb-4 bg-white rounded">
+    <div key={post.identifier} className="flex mb-4 bg-white rounded" id={post.identifier}>
       {/* Vote Section */}
       <Vote post={post} identifier={post.identifier} slug={post.slug} />
       {/* Post data section */}
