@@ -25,11 +25,13 @@ export class PostService {
     return this.postRepository.save(post);
   }
 
-  findAll() {
+  findAll(currentPage: number, postsPerPage: number) {
     // the same options can be used as in case of normal TypeORM Entity
     return this.postRepository.find({
       order: { createdAt: 'DESC' },
       relations: ['sub', 'comments', 'votes'],
+      skip: currentPage * postsPerPage,
+      take: postsPerPage,
     });
   }
 

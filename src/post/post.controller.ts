@@ -9,6 +9,8 @@ import {
   Res,
   Inject,
   forwardRef,
+  Req,
+  Query,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -45,9 +47,14 @@ export class PostController {
   }
 
   @Get()
-  async findAll(@Res() res) {
+  // async findAll(@Res() res, @Req() req) {
+  //   const currentPage: number = (req.query.page || 0) as number;
+  //   const postsPerPage: number = (req.query.count || 3) as number;
+  async findAll(@Res() res, @Query() query) {
+    const currentPage: number = (query.page || 0) as number;
+    const postsPerPage: number = (query.count || 3) as number;
     try {
-      let posts = await this.postService.findAll();
+      let posts = await this.postService.findAll(currentPage, postsPerPage);
       if (res.locals.user) {
         posts = this.postService.setUserVotesOnPosts(posts, res.locals.user);
       }
