@@ -29,13 +29,13 @@ export default function Home() {
   const { data: topSubs } = useSWR<Sub[]>('/misc/top-subs');
   const { authenticated } = useAuthState();
 
-  const { data, error, mutate, size: page, setSize: setPage, isValidating } = useSWRInfinite<Post[]>(
+  // isValidating true when we are fetching data!!!!
+  const { data, error, mutate, size: page, setSize: setPage, isValidating, revalidate } = useSWRInfinite<Post[]>(
     index => 
       `/posts?page=${index}`
   );
 
   const posts: Post[] = data ? [].concat(...data) : [];
-  const isLoadingInitialData = !data && !error;
 
   useEffect(() => {
     if (!posts || !posts.length) return;
@@ -50,7 +50,6 @@ export default function Home() {
     if (!element) return; // html element not rendered yet
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting === true) {
-        console.log('reached bottom of posts');
         setPage(page + 1);
         observer.unobserve(element); // always unobserve the bottom element when we reach them
       }
@@ -66,11 +65,13 @@ export default function Home() {
       </Head>
 
       <div className="container flex pt-4">
-        <div className="w-full px-4 md:w-160 md:p-0">
           {/* Post feed */}
+        <div className="w-full px-4 md:w-160 md:p-0">
+          {isValidating && <p className="text-lg text-center">Loading...</p>} {/**first loading */}
           {posts?.map((post: Post) => (
-            <PostCard post={post} key={post.identifier} />
-          ))}
+            <PostCard post={post} key={post.identifier} revalidate={revalidate} />
+            ))}
+          {isValidating && posts.length && <p className="text-lg text-center">Loading More...</p>}
         </div>
         {/* Sidebar */}
         <div className="hidden ml-6 md:block w-80">

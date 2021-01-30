@@ -9,9 +9,10 @@ interface Props {
   comment?: Comment;
   identifier: string | string[] | undefined;
   slug: string | string[] | undefined;
+  revalidate?: Function
 }
 
-const Vote: React.FC<Props> = ({ post, comment, identifier, slug }) => {
+const Vote: React.FC<Props> = ({ post, comment, identifier, slug, revalidate }) => {
   const { authenticated } = useAuthState();
   const router = useRouter();
 
@@ -32,6 +33,9 @@ const Vote: React.FC<Props> = ({ post, comment, identifier, slug }) => {
         commentIdentifier: comm?.identifier, // if it's undefined, this commentIdentifier wont be sent to server!!!
         value,
       });
+
+      if (revalidate) revalidate()
+
     } catch (error) {
       console.log(error);
     }

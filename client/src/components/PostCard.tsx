@@ -4,20 +4,23 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import ActionButton from './ActionButton';
 import Vote from './Vote';
+import { useAuthState } from '../context/auth';
 dayjs.extend(relativeTime);
 
 interface Props {
   post: Post;
+  revalidate?: Function
 }
 
 function PostCard({
-  post
+  post,
+  revalidate
 }: Props) {
   
   return (
     <div key={post.identifier} className="flex mb-4 bg-white rounded" id={post.identifier}>
       {/* Vote Section */}
-      <Vote post={post} identifier={post.identifier} slug={post.slug} />
+      <Vote post={post} identifier={post.identifier} slug={post.slug} revalidate={revalidate}  />
       {/* Post data section */}
       <div className="w-full p-2">
         <div className="flex items-center">
