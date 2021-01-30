@@ -10,6 +10,7 @@ import PostCard from '../components/PostCard';
 import { Post, Sub } from '../types';
 import Link from 'next/link';
 import { useAuthState } from '../context/auth';
+import { useRouter } from 'next/router';
  
 dayjs.extend(relativeTime);
 

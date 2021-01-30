@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 import useSWR from "swr";
 import Sidebar from "../../../components/Sidebar";
+import { useAuthState } from "../../../context/auth";
 import { Post, Sub } from "../../../types";
 
 export default function submit() {
@@ -13,6 +14,9 @@ export default function submit() {
   const { data: sub, error } = useSWR<Sub>(subName ? `/subs/${subName}` : null);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+  const { authenticated } = useAuthState();
+
+  if (!authenticated) router.push('/login');
 
   if (error) router.push('/');
 
@@ -79,16 +83,16 @@ export default function submit() {
 }
 
 // check if user logged in in server side (rendering)
-export const getServerSideProps: GetServerSideProps =async ({ req, res }) => {
-  try {
-    const cookie = req.headers.cookie;
-    // throw an error if user is not logged in and redirect in the catch
-    if (!cookie) throw new Error('Missing auth token cookie')
+// export const getServerSideProps: GetServerSideProps =async ({ req, res }) => {
+//   try {
+//     const cookie = req.headers.cookie;
+//     // throw an error if user is not logged in and redirect in the catch
+//     if (!cookie) throw new Error('Missing auth token cookie')
 
-    await Axios.get('/auth/me', { headers: { cookie } });
+//     await Axios.get('/auth/me', { headers: { cookie } });
 
-    return { props: {}};
-  } catch (error) {
-    res.writeHead(307, { location: '/login' }).end()
-  }
-}
+//     return { props: {}};
+//   } catch (error) {
+//     res.writeHead(307, { location: '/login' }).end()
+//   }
+// }

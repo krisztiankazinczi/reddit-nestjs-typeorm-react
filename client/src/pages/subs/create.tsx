@@ -4,14 +4,18 @@ import Head from "next/head";
 import { FormEvent, useState } from "react"
 import { useRouter } from "next/router";
 import CreateSubInput from "../../components/CreateSubInput";
+import { useAuthState } from "../../context/auth";
 
 export default function create() {
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [errors, setErrors] = useState<Partial<any>>({});
-
+  const { authenticated } = useAuthState();
   const router = useRouter();
+
+  if (!authenticated) router.push('/login');
+
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();

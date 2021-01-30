@@ -65,7 +65,7 @@ function PostCard({
           </Link>
           <ActionButton>
             <i className="mr-1 fas fa-share fa-xs"></i>
-            <span className="font-bold">Share</span>
+            <span className="font-bold">Share</span> 
           </ActionButton>
           <ActionButton>
             <i className="mr-1 fas fa-bookmark fa-xs"></i>
