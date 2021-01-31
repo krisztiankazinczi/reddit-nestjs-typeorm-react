@@ -76,7 +76,7 @@ const title = "Reddit: the front page of internet";
       <div className="container flex pt-4">
           {/* Post feed */}
         <div className="w-full px-4 md:w-160 md:p-0">
-          {isInitialLoading && <p className="text-lg text-center">Loading...</p>} {/**first loading */}
+          {!!isInitialLoading && <p className="text-lg text-center">Loading...</p>} {/**first loading */}
           {posts?.map((post: Post) => (
             <PostCard post={post} key={post.identifier} revalidate={revalidate} />
             ))}

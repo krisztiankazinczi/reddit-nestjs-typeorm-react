@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router"
 import useSWR from "swr";
 import PostCard from "../../components/PostCard";
+import { useAuthState } from "../../context/auth";
 import { Comment, Post } from "../../types";
 
 export default function user() {
@@ -27,8 +28,9 @@ export default function user() {
                 return <PostCard key={post.identifier + Math.random() * 10000} post={post} />
               } else {
                 const comment: Comment = submission;
+                console.log(comment);
                 return (
-                  <div key={comment.identifier + Math.random() * 10000} className="flex my-4 bg-white rounded">
+                  <div key={comment.identifier + Math.random() * 10000} className="flex mb-4 bg-white rounded">
                     <div className="flex-shrink-0 w-10 py-4 text-center bg-gray-200 rounded-l">
                       <i className="text-gray-500 fas fa-comment-alt fa-xs"></i>
                       </div>

@@ -98,6 +98,7 @@ export class MiscController {
       const user = await this.userService.getUserSubmissions(param.username);
       const posts = await this.postService.findPostsByUser(user);
       const comments = await this.postService.findCommentsByUser(user);
+      posts.forEach((post) => post.sub.getUrls());
 
       if (res.locals.user) {
         this.postService.setUserVotesOnPosts(posts, user);
@@ -107,7 +108,7 @@ export class MiscController {
       const submissions: any[] = [];
       // ...p.toJSON() - hasznaljuk, mert rengeteg adat lehet benne!!!!!
       posts.forEach((p) => submissions.push({ type: 'Post', ...p.toJSON() }));
-      posts.forEach((c) =>
+      comments.forEach((c) =>
         submissions.push({ type: 'Comment', ...c.toJSON() }),
       );
 

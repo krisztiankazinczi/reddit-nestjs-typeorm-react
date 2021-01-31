@@ -27,7 +27,7 @@ function PostCard({
       {/* Vote Section */}
       <Vote post={post} identifier={post.identifier} slug={post.slug} revalidate={revalidate}  />
       {/* Post data section */}
-      <div className="w-full p-2">
+      <div className="w-full py-2 pr-2">
         <div className="flex items-center">
           {!isInSubPage && (
             <>

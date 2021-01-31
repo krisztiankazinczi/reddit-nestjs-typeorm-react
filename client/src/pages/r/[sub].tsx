@@ -83,8 +83,6 @@ export default function SubPage() {
     ))
   }
 
-  console.log(imageUrl)
-
   return (
     <div>
       <Head>
