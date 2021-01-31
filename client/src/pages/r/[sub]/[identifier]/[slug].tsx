@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useAuthState } from "../../../../context/auth";
 import ActionButton from "../../../../components/ActionButton";
-import { FormEvent, useEffect, useEffect, useState } from "react";
+import { FormEvent, useEffect,  useState } from "react";
 import Vote from "../../../../components/Vote";
 
 dayjs.extend(relativeTime);
@@ -24,11 +24,11 @@ export default function PostPage() {
   const [newComment, setNewComment] = useState('');
   const [description, setDescription] = useState('');
 
-  const { data: post, error } = useSWR<Post>(
+  const { data: post, error, revalidate: revalidatePost } = useSWR<Post>(
     identifier && slug ? `/posts/${identifier}/${slug}` : ''
   );
 
-  const { data: comments, revalidate } = useSWR<Comment[]>(
+  const { data: comments, revalidate: revalidateComment } = useSWR<Comment[]>(
     identifier && slug ? `/posts/${identifier}/${slug}/comments` : ''
   );
   if (error) router.push('/');
@@ -49,8 +49,9 @@ export default function PostPage() {
           body: newComment
         });
         setNewComment('');
+        revalidatePost();
+        revalidateComment();
       }
-      revalidate();
     } catch (error) {
       
     }
@@ -92,7 +93,7 @@ export default function PostPage() {
             <>
               {post && (
                 <div className="flex">
-                  <Vote post={post} identifier={identifier} slug={slug} />
+                  <Vote post={post} identifier={identifier} slug={slug} revalidate={revalidatePost} />
                   <div className="py-2 pr-2">
                   <div className="flex items-center">
                     <p className="text-xs text-gray-500">
@@ -136,7 +137,9 @@ export default function PostPage() {
                 </div>
               )}
               {/* Comment input area */}
-                <div className="pl-10 pr-6 mb-4">
+              <div className="flex">
+              <div className="flex-shrink-0 w-10 py-2 mr-2 text-center bg-gray-200" />
+                <div className="w-full my-2 mr-3">
                   {authenticated ? (
                     <div>
                       <p className="mb-1 text-xs">
@@ -147,7 +150,7 @@ export default function PostPage() {
                       </p>
                       <form onSubmit={submitComment}>
                         <textarea 
-                          className="w-full p-3 border-gray-300 rounded focus:outline-none focus:border-gray-600" 
+                          className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-gray-600" 
                           onChange={ e => setNewComment(e.target.value)} 
                           value={newComment}>
                         </textarea>
@@ -171,11 +174,12 @@ export default function PostPage() {
                     </div>
                   )}
                 </div>
+              </div>
               {/* Comments list */}
               <hr />
               {post && comments?.map(comment => (
                 <div className="flex" key={comment.identifier}>
-                  <Vote post={post} comment={comment} identifier={identifier} slug={slug} />
+                  <Vote post={post} comment={comment} identifier={identifier} slug={slug} revalidate={revalidateComment} />
                   <div className="py-2 pr-2">
                     <p className="mb-1 text-xs leading-none">
                       <Link href={`/u/${comment.username}`}>
