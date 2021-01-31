@@ -105,6 +105,7 @@ export class MiscController {
       const posts = await this.postService.findPostsByUser(user);
       const comments = await this.postService.findCommentsByUser(user);
       posts.forEach((post) => post.sub.getUrls());
+      user.getProfileImageUrl();
 
       if (res.locals.user) {
         this.postService.setUserVotesOnPosts(posts, user);

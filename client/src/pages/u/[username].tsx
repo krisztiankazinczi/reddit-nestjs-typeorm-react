@@ -1,26 +1,63 @@
+import Axios from "axios";
 import dayjs from "dayjs";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router"
+import { ChangeEvent, createRef } from "react";
 import useSWR from "swr";
 import PostCard from "../../components/PostCard";
 import { useAuthState } from "../../context/auth";
-import { Comment, Post } from "../../types";
+import { Comment, Post, User } from "../../types";
+import classNames from 'classnames';
 
 export default function user() {
   const router = useRouter();
   const username = router.query.username;
+  const { user } = useAuthState();
+  const fileInputRef = createRef<HTMLInputElement>()
 
-  const { data, error } = useSWR<any>(username ? `/misc/users/${username}` : null)
+  const { data, error, revalidate } = useSWR<any>(username ? `/misc/users/${username}` : null)
   if (error) router.push('/');
+
+  const openFileInput = () => {
+    console.log('meghivodik vajon?')
+    if (user?.username !== data?.user?.username) return;
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  }
+
+  const uploadFile = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    const formData = new FormData();
+    if (file && fileInputRef.current) {
+      formData.append('file', file);
+      formData.append('type', fileInputRef.current.name);
+    }
+
+    try {
+      if (data?.user) {
+        await Axios.post(`/${data.user.username}/image`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data'}
+        });
+      }
+
+      revalidate();
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
 
   return (
     <>
       <Head>
-        <title>{data?.user.username}</title>
+        <title>{data?.user?.username}</title>
       </Head>
       {data && (
         <div className="container flex pt-5">
+          <input type="file" hidden={true} ref={fileInputRef} onChange={uploadFile} />
           <div className="w-160">
             {data.submissions.map((submission: any) => {
               if (submission.type === 'Post') {
@@ -62,14 +99,18 @@ export default function user() {
           <div className="ml-6 w-80">
             <div className="bg-white rounded">
               <div className="p-3 bg-blue-500 rounded-t">
-                <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="user profile"
-                  className="w-16 h-16 mx-auto border-2 border-white rounded-full"
+                <img 
+                  src={(data.user as User).imageUrl} 
+                  alt="user profile"
+                  className={classNames("w-16 h-16 mx-auto border-2 border-white rounded-full", 
+                  { 'cursor-pointer': user?.username === data?.user?.username })}
+                  onClick={() => openFileInput()}
                 />
               </div>
               <div className="p-3">
-                <h1 className="mb-3 text-xl text-center">{data.user.username}</h1>
+                <h1 className="mb-3 text-xl text-center">{(data.user as User).username}</h1>
                 <hr />
-                <p className="mt-3 text-center">Joined {dayjs(data.user.createdAt).format('MMM YYYY')}</p>
+                <p className="mt-3 text-center">Joined {dayjs((data.user as User).createdAt).format('MMM YYYY')}</p>
               </div>
             </div>
           </div>

@@ -57,4 +57,12 @@ export default class User extends Entity {
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 6);
   }
+
+  protected imageUrl: string;
+
+  getProfileImageUrl() {
+    this.imageUrl = this.imageUrn
+      ? `${process.env.APP_URL}/images/${this.imageUrn}`
+      : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+  }
 }

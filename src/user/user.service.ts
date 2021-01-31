@@ -41,7 +41,7 @@ export class UserService {
   getUserSubmissions(username: string) {
     return this.userRepository.findOneOrFail({
       where: { username },
-      select: ['username', 'createdAt'],
+      select: ['username', 'createdAt', 'imageUrn'],
     });
   }
 }

@@ -203,6 +203,13 @@ export class UserController {
 
     const user: User = await this.userService.findByUsername(username);
 
+    if (!user) {
+      fs.unlinkSync(`public/images/${file.filename}`);
+      return res
+        .status(403)
+        .json({ error: 'Username does not exist in our database  ' });
+    }
+
     if (user.username !== res.locals.user.username) {
       fs.unlinkSync(`public/images/${file.filename}`);
       return res.status(403).json({ error: 'It is not your account' });

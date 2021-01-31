@@ -20,6 +20,8 @@ export interface User {
   email: string;
   createdAt: string;
   updatedAt: string;
+  imageUrn?: string | null;
+  imageUrl?: string;
 }
 
 export interface Sub {
