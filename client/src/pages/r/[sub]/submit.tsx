@@ -8,6 +8,9 @@ import Sidebar from "../../../components/Sidebar";
 import { useAuthState } from "../../../context/auth";
 import { Post, Sub } from "../../../types";
 
+const titleMeta = "Submit to Reddit";
+const description = "Submit new post to Reddit";
+
 export default function submit() {
   const router = useRouter();
   const { sub: subName } = router.query;
@@ -37,7 +40,12 @@ export default function submit() {
     <div className="container flex pt-5">
       <div className="w-160">
         <Head>
-          <title>Submit to Reddit</title>  
+          <title>{titleMeta}</title>  
+          <meta name="description" content={description} />
+          <meta property="og:description" content={description} />
+          <meta property="og:title" content={titleMeta} />
+          <meta property="twitter:description" content={description} />
+          <meta property="twitter:title" content={titleMeta} />
         </Head>
         <div className="w-160">
           <div className="p-4 bg-white rounded">

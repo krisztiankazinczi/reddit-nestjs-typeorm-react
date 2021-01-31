@@ -21,8 +21,8 @@ class MyDocument extends Document {
           <meta property="twitter:site_name" content="@reddit" />
           <meta property="twitter:card" content="summary" />
           <meta property="og:type" content="website" />
-          <meta property="og:image" content={`${process.env.NEXT_PUBLIC_CLIENT_BASE_URL}/reddit.svg`} />
-          <meta property="twitter:image" content={`${process.env.NEXT_PUBLIC_CLIENT_BASE_URL}/reddit.svg`} />
+          <meta property="og:image" content={`${process.env.NEXT_PUBLIC_CLIENT_BASE_URL}/images/reddit.svg`} />
+          <meta property="twitter:image" content={`${process.env.NEXT_PUBLIC_CLIENT_BASE_URL}/images/reddit.svg`} />
           <link rel="icon" type="image/svg+xml" href="/images/reddit.svg" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link

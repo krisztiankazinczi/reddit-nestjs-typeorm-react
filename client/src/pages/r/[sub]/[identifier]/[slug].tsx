@@ -38,7 +38,6 @@ export default function PostPage() {
     let desc = post.body || post.title;
     desc = desc.substring(0, 158).concat('..'); // this is suggested, the description meta should be 150-160 character
     setDescription(desc);
-    
   }, [post]);
 
   const submitComment = async (event: FormEvent) => {

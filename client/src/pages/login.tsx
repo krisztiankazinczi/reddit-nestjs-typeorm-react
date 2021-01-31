@@ -6,6 +6,9 @@ import InputGroup from '../components/InputGroup';
 import { useRouter } from 'next/router';
 import { useAuthDispatch, useAuthState } from '../context/auth';
 
+const titleMeta = "Login in Reddit";
+const descriptionMeta = "Login page of Reddit app";
+
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -36,10 +39,18 @@ export default function Login() {
     }
   };
 
+
+
+
   return (
     <div className="flex bg-white">
       <Head>
-        <title>Login</title>
+        <title>{titleMeta}</title>
+        <meta name="description" content={descriptionMeta} />
+        <meta property="og:description" content={descriptionMeta} />
+        <meta property="og:title" content={titleMeta} />
+        <meta property="twitter:description" content={descriptionMeta} />
+        <meta property="twitter:title" content={titleMeta} />
       </Head>
 
       <div

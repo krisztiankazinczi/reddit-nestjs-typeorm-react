@@ -13,6 +13,8 @@ import Sidebar from '../../components/Sidebar';
 export default function SubPage() {
   // Local State
   const [ownSub, setOwnSub] = useState(false);
+  const [description, setDescription] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   // Global State
   const { authenticated, user } = useAuthState();
   // Utils
@@ -26,6 +28,14 @@ export default function SubPage() {
     if (!sub) return;
     setOwnSub(authenticated && user?.username === sub.username);
   }, [sub])
+
+  useEffect(() => {
+    if (!sub) return;
+    let desc = sub?.description || sub.title;
+    desc = desc.substring(0, 158).concat('..'); // this is suggested, the description meta should be 150-160 character
+    setDescription(desc);
+    setImageUrl(sub.imageUrl);
+  }, [sub]);
 
   const openFileInput = (type: string) => {
     if (!ownSub) return;
@@ -73,10 +83,20 @@ export default function SubPage() {
     ))
   }
 
+  console.log(imageUrl)
+
   return (
     <div>
       <Head>
         <title>{sub?.title}</title>
+        <meta property="og:image" content={imageUrl} />
+        <meta property="twitter:image" content={imageUrl} />
+        <link rel="icon" type="image/jpg" href={imageUrl} />
+        <meta name="description" content={description} />
+        <meta property="og:description" content={description} />
+        <meta property="og:title" content={sub?.title} />
+        <meta property="twitter:description" content={description} />
+        <meta property="twitter:title" content={sub?.title} />
       </Head>
         {sub && (
           <>

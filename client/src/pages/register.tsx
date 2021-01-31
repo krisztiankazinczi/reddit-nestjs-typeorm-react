@@ -6,6 +6,9 @@ import InputGroup from '../components/InputGroup';
 import { useRouter } from 'next/router';
 import { useAuthState } from '../context/auth';
 
+const titleMeta = "Register in Reddit";
+const descriptionMeta = "Register page of Reddit app";
+
 export default function Register() {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -42,7 +45,12 @@ export default function Register() {
   return (
     <div className="flex bg-white">
       <Head>
-        <title>Register</title>
+        <title>{titleMeta}</title>
+        <meta name="description" content={descriptionMeta} />
+        <meta property="og:description" content={descriptionMeta} />
+        <meta property="og:title" content={titleMeta} />
+        <meta property="twitter:description" content={descriptionMeta} />
+        <meta property="twitter:title" content={titleMeta} />
       </Head>
 
       <div

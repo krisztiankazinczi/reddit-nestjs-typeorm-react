@@ -28,10 +28,18 @@ export default function create() {
     }
   }
 
+  const titleMeta = "Create new Community";
+  const descriptionMeta = "Create new Community in Reddit";
+
   return (
     <div className="flex bg-white">
       <Head>
-        <title>Create community</title>
+        <title>{titleMeta}</title>
+        <meta name="description" content={descriptionMeta} />
+        <meta property="og:description" content={descriptionMeta} />
+        <meta property="og:title" content={titleMeta} />
+        <meta property="twitter:description" content={descriptionMeta} />
+        <meta property="twitter:title" content={titleMeta} />
       </Head>
 
       <div
