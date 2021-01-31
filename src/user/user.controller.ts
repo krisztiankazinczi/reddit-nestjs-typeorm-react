@@ -1,13 +1,28 @@
-import { Body, Controller, Get, Post, Res, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Res,
+  Param,
+  UploadedFile,
+  Req,
+  UseInterceptors,
+} from '@nestjs/common';
+import path from 'path';
+import fs from 'fs';
 import { validate } from 'class-validator';
 import { UserService } from './user.service';
-import { mapErrors } from '../utils/helpers';
+import { makeId, mapErrors } from '../utils/helpers';
 import bcrypt from 'bcrypt';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
 import { usernameOrEmailExists } from './validation/register.validation';
 import { CreateUserDto } from './dto/create-user-dto';
 import { LoginUserDto } from './dto/login-user-dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import User from './entities/user.entity';
 
 @Controller('api')
 export class UserController {
@@ -146,5 +161,72 @@ export class UserController {
   @Get('users')
   async findAll() {
     return await this.userService.findAll();
+  }
+
+  @Post(':username/image')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: 'public/images',
+        filename: (req, file, callback) => {
+          // this code generates a random filename
+          const name = makeId(15);
+          callback(null, name + path.extname(file.originalname)); //random string + file extension
+        },
+      }),
+      // this middleware will check the type of uploaded files!!!
+      fileFilter: (
+        req,
+        file: any,
+        callback: (error: Error, acceptFile: boolean) => void,
+      ) => {
+        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+          callback(null, true);
+        } else {
+          req.fileValidationError = 'Unsupported file type';
+          // I don't throw new error here. I will handle this in controller function
+          callback(null, false);
+        }
+      },
+    }),
+  )
+  async uploadFile(
+    @UploadedFile() file,
+    @Req() req,
+    @Res() res,
+    @Param() params,
+  ) {
+    if (req.fileValidationError) {
+      return res.status(400).json({ error: req.fileValidationError });
+    }
+    const { username } = params;
+
+    const user: User = await this.userService.findByUsername(username);
+
+    if (user.username !== res.locals.user.username) {
+      fs.unlinkSync(`public/images/${file.filename}`);
+      return res.status(403).json({ error: 'It is not your account' });
+    }
+
+    if (user.username)
+      try {
+        let oldImageUrn = '';
+        oldImageUrn = user.imageUrn || '';
+        user.imageUrn = file.filename;
+
+        // if we upload a new image, just delete the previous one
+        await this.userService.save(user);
+
+        if (oldImageUrn !== '') {
+          fs.unlinkSync(`public/images/${oldImageUrn}`);
+        }
+
+        return res.json(user);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Something went wrong' });
+      }
+
+    return res.status(200).json({ success: true });
   }
 }

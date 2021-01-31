@@ -38,12 +38,12 @@ export default function user() {
                         <p className="mb-2 text-xs text-gray-500">
                             <a className="font-semibold cursor-pointer hover:underline">{comment.username}</a>
                           <span> commented on </span>
-                          {comment?.post && comment?.url && (
-                            <Link href={comment.url}>
+                          <span className="mx-1">•</span>
+                          {comment?.post && comment?.post?.url && (
+                            <Link href={comment.post.url}>
                               <a className="cursor-pointer hover:underline">{comment.post.title}</a>
                             </Link>
                           )}
-                          <span className="mx-1">•</span>
                           {comment?.subName && (
                             <Link href={`/r/${comment.subName}`}>
                               <a className="text-black cursor-pointer hover:underline">/r/{comment.subName}</a>

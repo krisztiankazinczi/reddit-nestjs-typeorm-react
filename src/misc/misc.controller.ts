@@ -85,7 +85,13 @@ export class MiscController {
   @Get('top-subs')
   async topSubs(@Res() res) {
     try {
-      const subs = await this.subService.getTopSubs();
+      let subs = await this.subService.getTopSubs();
+      subs = subs.map((sub) => {
+        return {
+          ...sub,
+          postCount: sub.postCount / 5,
+        };
+      });
       return res.json(subs);
     } catch (error) {
       return res.status(500).json({ error: 'Something went wrong' });

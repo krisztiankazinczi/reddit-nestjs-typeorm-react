@@ -43,6 +43,9 @@ export default class User extends Entity {
   @Length(6, 255, { message: 'Must be at least 6 characters long' })
   password: string;
 
+  @Column({ nullable: true })
+  imageUrn: string;
+
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
 

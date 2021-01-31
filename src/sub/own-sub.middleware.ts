@@ -10,7 +10,7 @@ export class OwnSubMiddleware implements NestMiddleware {
     const user: User = res.locals.user;
     try {
       const sub = await Sub.findOneOrFail({ where: { name: req.params.name } });
-      console.log(sub);
+
       if (sub.username !== user.username) {
         return res.status(403).json({ error: 'You dont own this sub' });
       }

@@ -20,6 +20,7 @@ export class UserModule {
         { path: 'api/me', method: RequestMethod.GET },
         { path: 'api/users', method: RequestMethod.GET },
         { path: 'api/logout', method: RequestMethod.GET },
+        { path: 'api/:username/image', method: RequestMethod.POST },
       );
     consumer
       .apply(AuthMiddleware)
@@ -27,6 +28,7 @@ export class UserModule {
         { path: 'api/me', method: RequestMethod.GET },
         { path: 'api/users', method: RequestMethod.GET },
         { path: 'api/logout', method: RequestMethod.GET },
+        { path: 'api/:username/image', method: RequestMethod.POST },
       );
   }
 }

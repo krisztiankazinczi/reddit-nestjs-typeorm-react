@@ -56,7 +56,7 @@ export default function PostPage() {
       
     }
   }
-console.log(user)
+
   return (
     <>
       <Head>

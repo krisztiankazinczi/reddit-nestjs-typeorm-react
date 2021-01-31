@@ -64,12 +64,12 @@ const Navbar: React.FC = () => {
 
   return (
     <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between h-12 px-5 bg-white">
-      <div className="flex items-center">
+      <div className="flex items-center flex-shrink-0">
         <Link href="/">
           <a>
             {/* <RedditLogo className="w-8 h-8 mr-2" /> */}
             <img
-              className="w-8 h-8 mr-2"
+              className="w-8 h-8 mr-2 "
               src="https://external-preview.redd.it/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png?auto=webp&s=38648ef0dc2c3fce76d5e1d8639234d8da0152b2"
               alt="reddit logo"
             />
