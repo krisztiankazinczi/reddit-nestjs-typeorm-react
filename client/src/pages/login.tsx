@@ -30,7 +30,6 @@ export default function Login() {
         password,
         username,
       });
-
       dispatch( 'LOGIN', res.data );
       // redirect to login page with nextjs router
       router.back(); // ez oda fogja vissza redirektalni ahonnan a login pagera kattintott
@@ -85,7 +84,7 @@ export default function Login() {
             </button>
           </form>
           <small>
-            New to Reddit?
+            New to Reddit?{' '}
             <Link href="/register">
               <a className="mb-1 text-blue-500 uppercase">Sign Up</a>
             </Link>

@@ -57,8 +57,6 @@ export class UserController {
 
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto, @Res() res) {
-    // const { username, password } = body;
-    console.log('login meghivodik');
     try {
       const user = await this.userService.findByUsername(loginUserDto.username);
       if (!user) {
@@ -85,6 +83,35 @@ export class UserController {
           sameSite: 'strict',
           maxAge: 3600, // cookie valid for 1h
           path: '/', // tis cookie will be valid through the whole page. If it's more detailed the cookie will be valid only in that paths
+        }),
+      );
+
+      return res.json(user);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: 'Something went wrong' });
+    }
+  }
+
+  @Get('demo-login')
+  async demoLogin(@Res() res) {
+    try {
+      const user = await this.userService.findByUsername('demo');
+      if (!user) {
+        return res.status(404).json({ username: 'User not found' });
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const token = jwt.sign({ username: 'demo' }, process.env.JWT_SECRET!);
+
+      res.set(
+        'Set-Cookie',
+        cookie.serialize('token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 3600,
+          path: '/',
         }),
       );
 

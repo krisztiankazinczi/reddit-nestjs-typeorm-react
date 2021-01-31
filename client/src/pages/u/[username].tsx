@@ -28,7 +28,7 @@ export default function user() {
                 return <PostCard key={post.identifier + Math.random() * 10000} post={post} />
               } else {
                 const comment: Comment = submission;
-                console.log(comment);
+                
                 return (
                   <div key={comment.identifier + Math.random() * 10000} className="flex mb-4 bg-white rounded">
                     <div className="flex-shrink-0 w-10 py-4 text-center bg-gray-200 rounded-l">

@@ -108,7 +108,7 @@ export default function Register() {
             </button>
           </form>
           <small>
-            Already a redditor?
+            Already a redditor?{' '}
             <Link href="/login">
               <a className="mb-1 text-blue-500 uppercase">Log in</a>
             </Link>

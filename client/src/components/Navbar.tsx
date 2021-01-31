@@ -25,6 +25,15 @@ const Navbar: React.FC = () => {
       .catch(err => console.log(err));
   }
 
+  const demoLogin = () => {
+    Axios.get('/demo-login')
+      .then((res) => {
+        dispatch( 'LOGIN', res.data );
+        router.back(); 
+      })
+      .catch(err => console.log(err));
+  }
+
   useEffect(() => {
     //delete search results if every character deleted from search input
     if (name.trim() === '') {
@@ -75,7 +84,7 @@ const Navbar: React.FC = () => {
           <i className="pl-4 pr-3 text-gray-500 fas fa-search" />
           <input
             type="text"
-            className="py-1 pr-3 bg-transparent rounded focus:outline-none w-160"
+            className="py-1 pr-3 bg-transparent rounded focus:outline-none md:lg-90 lg:w-160"
             placeholder="Search"
             value={name}
             onChange={e => setName(e.target.value)}
@@ -104,18 +113,22 @@ const Navbar: React.FC = () => {
       <div className="flex">
         {!loading && (authenticated ? (
           <button 
-            className="hidden w-20 py-1 mr-5 leading-5 md:block lg:w-32 holo blue button" 
+            className="hidden w-20 py-1 mr-5 leading-5 md:block lg:w-28 holo blue button" 
             onClick={logout}
           >
             Logout
           </button>
         ) : (
           <>
+            <a 
+              className="hidden w-20 py-1 mr-5 leading-5 cursor-pointer md:block lg:w-24 blue button"
+              onClick={demoLogin}
+            >Demo Login</a>
             <Link href="/login">
-              <a className="hidden w-20 py-1 mr-5 leading-5 md:block lg:w-32 holo blue button">Log In</a>
+              <a className="hidden w-20 py-1 mr-5 leading-5 md:block lg:w-24 holo blue button">Log In</a>
             </Link>
             <Link href="/register">
-              <a className="hidden w-20 py-1 leading-5 md:block lg:w-32 blue button">Sign Up</a>
+              <a className="hidden w-20 py-1 leading-5 md:block lg:w-24 blue button">Sign Up</a>
             </Link>
           </>
         ))}
