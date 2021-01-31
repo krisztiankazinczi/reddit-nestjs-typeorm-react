@@ -20,7 +20,6 @@ export default function user() {
   if (error) router.push('/');
 
   const openFileInput = () => {
-    console.log('meghivodik vajon?')
     if (user?.username !== data?.user?.username) return;
     if (fileInputRef.current) {
       fileInputRef.current.click();

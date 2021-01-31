@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import ActionButton from './ActionButton';
 import Vote from './Vote';
-import { useAuthState } from '../context/auth';
+import { useAuthState} from '../context/auth';
 import { useRouter } from 'next/router';
 dayjs.extend(relativeTime);
 
@@ -17,7 +17,7 @@ function PostCard({
   post,
   revalidate
 }: Props) {
-
+  const { user } = useAuthState();
   const router = useRouter();
 
   const isInSubPage = router.pathname === '/r/[sub]';
@@ -63,23 +63,37 @@ function PostCard({
         </Link>
         {post.body && <p className="my-1 text-sm">{post.body}</p>}
 
-        <div className="flex">
-          <Link href={post.url}>
-            <a>
-              <ActionButton>
-                <i className="mr-1 fas fa-comment-alt fa-xs"></i>
-                <span className="font-bold">{post.commentCount} Comments</span>
-              </ActionButton>
-            </a>
-          </Link>
-          <ActionButton>
-            <i className="mr-1 fas fa-share fa-xs"></i>
-            <span className="font-bold">Share</span> 
-          </ActionButton>
-          <ActionButton>
-            <i className="mr-1 fas fa-bookmark fa-xs"></i>
-            <span className="font-bold">Save</span>
-          </ActionButton>
+        <div className="flex justify-between w-full">
+          <div className="flex">
+            <Link href={post.url}>
+              <a>
+                <ActionButton>
+                  <i className="mr-1 fas fa-comment-alt fa-xs"></i>
+                  <span className="font-bold">{post.commentCount} Comments</span>
+                </ActionButton>
+              </a>
+            </Link>
+            <ActionButton>
+              <i className="mr-1 fas fa-share fa-xs"></i>
+              <span className="font-bold">Share</span> 
+            </ActionButton>
+            <ActionButton>
+              <i className="mr-1 fas fa-bookmark fa-xs"></i>
+              <span className="font-bold">Save</span>
+            </ActionButton>
+          </div>
+          <div className="flex">
+            {user?.username === post.username && (
+              <Link href={`${post.url}/edit`}>
+                <a>
+                  <ActionButton>
+                    <i className="mr-1 fas fa-edit fa-xs"></i>
+                    <span className="font-bold">Edit</span>
+                  </ActionButton>
+                </a>
+              </Link>        
+            )}
+          </div>
         </div>
       </div>
     </div>

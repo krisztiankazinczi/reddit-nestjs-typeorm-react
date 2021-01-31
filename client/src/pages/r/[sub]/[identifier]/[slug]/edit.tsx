@@ -2,35 +2,41 @@ import Axios from "axios";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import useSWR from "swr";
-import Sidebar from "../../../components/Sidebar";
-import { useAuthState } from "../../../context/auth";
-import { Post, Sub } from "../../../types";
-
-const titleMeta = "Submit to Reddit";
-const description = "Submit new post to Reddit";
+import Sidebar from "../../../../../components/Sidebar";
+import { useAuthState } from "../../../../../context/auth";
+import { Post, Sub } from "../../../../../types";
 
 export default function submit() {
   const router = useRouter();
-  const { sub: subName } = router.query;
-  const { data: sub, error } = useSWR<Sub>(subName ? `/subs/${subName}` : null);
+  const { sub: subName, identifier, slug } = router.query;
+  const { data: sub, error: subError } = useSWR<Sub>(subName ? `/subs/${subName}` : null);
+  const { data: post, error: postError } = useSWR<Post>(slug && identifier ? `/posts/${identifier}/${slug}` : null);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const { authenticated } = useAuthState();
 
-  if (!authenticated) router.push('/login');
+  // if (!authenticated) router.push('/login');
 
-  if (error) router.push('/');
+  if (subError && postError) router.push('/');
+
+  useEffect(() => {
+    if (!post) return;
+    setTitle(post.title);
+    if (post?.body) {
+      setBody(post.body);
+    }
+  }, [post])
 
   const submitPost = async (event: FormEvent) => {
     event.preventDefault();
     if (title.trim() === '') return;
 
     try {
-      const { data: post } = await Axios.post<Post>('/posts', { title: title.trim(), body, subName});
+      const { data: editedPost } = await Axios.put<Post>(`/posts/${identifier}/${slug}`, { title: title.trim(), body, subName});
 
-      if (sub) router.push(`/r/${subName}/${post.identifier}/${post.slug}`);
+      if (sub) router.push(`/r/${subName}/${editedPost.identifier}/${editedPost.slug}`);
     } catch (error) {
       console.log(error)
     }
@@ -40,16 +46,11 @@ export default function submit() {
     <div className="container flex pt-5">
       <div className="w-160">
         <Head>
-          <title>{titleMeta}</title>  
-          <meta name="description" content={description} />
-          <meta property="og:description" content={description} />
-          <meta property="og:title" content={titleMeta} />
-          <meta property="twitter:description" content={description} />
-          <meta property="twitter:title" content={titleMeta} />
+          <title>Edit {post && post.title}</title>  
         </Head>
         <div className="w-160">
           <div className="p-4 bg-white rounded">
-            <h1 className="mb-3 text-lg">Submit a post to /r/{subName}</h1>
+            <h1 className="mb-3 text-lg">Edit your post on /r/{subName}</h1>
             <form onSubmit={submitPost}>
               <div className="relative mb-2">
                 <input 
@@ -70,6 +71,7 @@ export default function submit() {
                   value={body}
                   onChange={e => setBody(e.target.value)}
                   placeholder="Text (optional)"  
+                  rows={6}
                 ></textarea>
                 <div className="flex justify-end">
                   <button 
@@ -90,17 +92,3 @@ export default function submit() {
   )
 }
 
-// check if user logged in in server side (rendering)
-// export const getServerSideProps: GetServerSideProps =async ({ req, res }) => {
-//   try {
-//     const cookie = req.headers.cookie;
-//     // throw an error if user is not logged in and redirect in the catch
-//     if (!cookie) throw new Error('Missing auth token cookie')
-
-//     await Axios.get('/auth/me', { headers: { cookie } });
-
-//     return { props: {}};
-//   } catch (error) {
-//     res.writeHead(307, { location: '/login' }).end()
-//   }
-// }
